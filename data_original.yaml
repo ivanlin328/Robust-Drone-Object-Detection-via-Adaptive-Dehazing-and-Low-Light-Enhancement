@@ -1,0 +1,8 @@
+path: .
+
+train: dataset_original/images/val  
+val: dataset_original/images/val
+test: dataset_original/images/val   
+
+nc: 80
+

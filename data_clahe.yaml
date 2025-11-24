@@ -1,0 +1,7 @@
+path: .
+
+train: dataset_clahe/images/val
+val: dataset_clahe/images/val
+test: dataset_clahe/images/val
+
+nc: 80

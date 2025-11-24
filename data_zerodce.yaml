@@ -1,0 +1,8 @@
+path: .
+
+train: dataset_zerodce/images/val
+val: dataset_zerodce/images/val
+test: dataset_zerodce/images/val
+
+nc: 80
+
