@@ -1,6 +1,9 @@
-import cv2;
-import math;
-import numpy as np;
+import cv2
+import math
+import numpy as np
+import torch
+from lowlight import detect_and_save,compute_image_quality
+
 
 def DarkChannel(im,sz):
     b,g,r = cv2.split(im)
@@ -73,28 +76,36 @@ def Recover(im,t,A,tx = 0.1):
     return res
 
 if __name__ == '__main__':
-    import sys
-    try:
-        fn = sys.argv[1]
-    except:
-        fn = '/Users/ivanlin328/Desktop/UCSD/Fall 2025/ECE 253/ECE 253 Final Project/fog.png'
 
-    def nothing(*argv):
-        pass
-
-    src = cv2.imread(fn)
-
-    I = src.astype('float64')/255
- 
+    # --- Device Setup ---
+    device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+    print(f"Using device: {device}")
+    # Load Original Image
+    FILEPATH = '/Users/ivanlin328/Desktop/UCSD/Fall 2025/ECE 253/ECE 253 Final Project/dataset_original_fog/images/val/fog.jpg'
+    img = cv2.imread(FILEPATH)
+    # Calculate original images quality scores
+    niqe_or, brisque_or = compute_image_quality(FILEPATH, device)
+    print(f"original Image NIQE: {niqe_or:.4f}")
+    print(f"original Image BRISQUE: {brisque_or:.4f}")
+    
+    
+    # Process DCP Image
+    I = img.astype('float64')/255
     dark = DarkChannel(I,15)
     A = AtmLight(I,dark)
     te = TransmissionEstimate(I,A,15)
-    t = TransmissionRefine(src,te)
+    t = TransmissionRefine(img,te)
     J = Recover(I,t,A,0.1)
+    dcp_path = "/Users/ivanlin328/Desktop/UCSD/Fall 2025/ECE 253/ECE 253 Final Project/dataset_dcp/images/val/dcp.png"
+    cv2.imwrite(dcp_path,J*255)
+    
+    # Calculate DCP images quality scores
+    print("\n--- Calculating DCP images quality scores ---")
+    niqe_cl, brisque_cl = compute_image_quality(dcp_path, device)
+    print(f"DCP Image NIQE: {niqe_cl:.4f}")
+    print(f"DCP Image BRISQUE: {brisque_cl:.4f}")
+    
+    
+        
 
-    cv2.imshow("dark",dark)
-    cv2.imshow("t",t)
-    cv2.imshow('I',src)
-    cv2.imshow('J',J)
-    cv2.imwrite("./image/J.png",J*255)
-    cv2.waitKey()
+    
