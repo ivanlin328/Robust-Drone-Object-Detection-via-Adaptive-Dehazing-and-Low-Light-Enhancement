@@ -1,0 +1,7 @@
+path: .
+
+train: dataset_dehazeformer/images/val
+val: dataset_dehazeformer/images/val
+test: dataset_dehazeformer/images/val
+
+nc: 80

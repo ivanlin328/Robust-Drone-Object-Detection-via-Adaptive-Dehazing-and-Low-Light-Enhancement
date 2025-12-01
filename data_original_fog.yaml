@@ -1,0 +1,7 @@
+path: .
+
+train: dataset_original_fog/images/val
+val: dataset_original_fog/images/val
+test: dataset_original_fog/images/val
+
+nc: 80

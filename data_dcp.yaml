@@ -1,0 +1,7 @@
+path: .
+
+train: dataset_dcp/images/val
+val: dataset_dcp/images/val
+test: dataset_dcp/images/val
+
+nc: 80

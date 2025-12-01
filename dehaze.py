@@ -3,6 +3,7 @@ import math
 import numpy as np
 import torch
 from lowlight import detect_and_save,compute_image_quality
+from ultralytics import YOLO
 
 
 def DarkChannel(im,sz):
@@ -75,18 +76,37 @@ def Recover(im,t,A,tx = 0.1):
 
     return res
 
+def detect_and_save(model, img_path, out_path):
+    """
+    Runs YOLO detection on an image and saves the result.
+    """
+    # Run the model
+    results = model(img_path, save=True, project=out_path, name="",classes=[0,2])
+    print(f"[YOLO] Saved detection results to: {out_path}")
+    return results
+
 if __name__ == '__main__':
 
     # --- Device Setup ---
     device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
     print(f"Using device: {device}")
     # Load Original Image
-    FILEPATH = '/Users/ivanlin328/Desktop/UCSD/Fall 2025/ECE 253/ECE 253 Final Project/dataset_original_fog/images/val/fog.jpg'
+    FILEPATH = '/Users/ivanlin328/Desktop/UCSD/Fall 2025/ECE 253/ECE 253 Final Project/dataset_original_fog/images/val/fog10.jpg'
     img = cv2.imread(FILEPATH)
     # Calculate original images quality scores
     niqe_or, brisque_or = compute_image_quality(FILEPATH, device)
     print(f"original Image NIQE: {niqe_or:.4f}")
     print(f"original Image BRISQUE: {brisque_or:.4f}")
+    
+    
+    # --- Load YOLO Model ---
+    print("Loading YOLOv8l model...")
+    model = YOLO("yolov8l.pt")
+    model.to(device)
+    
+    # Process Original Image
+    print("\n--- Running YOLO on [Original Image] ---")
+    detect_and_save(model, FILEPATH, "detect_original_fog")
     
     
     # Process DCP Image
@@ -96,7 +116,7 @@ if __name__ == '__main__':
     te = TransmissionEstimate(I,A,15)
     t = TransmissionRefine(img,te)
     J = Recover(I,t,A,0.1)
-    dcp_path = "/Users/ivanlin328/Desktop/UCSD/Fall 2025/ECE 253/ECE 253 Final Project/dataset_dcp/images/val/dcp.png"
+    dcp_path = "/Users/ivanlin328/Desktop/UCSD/Fall 2025/ECE 253/ECE 253 Final Project/dataset_dcp/images/val/dcp_fog10.jpg"
     cv2.imwrite(dcp_path,J*255)
     
     # Calculate DCP images quality scores
@@ -104,6 +124,10 @@ if __name__ == '__main__':
     niqe_cl, brisque_cl = compute_image_quality(dcp_path, device)
     print(f"DCP Image NIQE: {niqe_cl:.4f}")
     print(f"DCP Image BRISQUE: {brisque_cl:.4f}")
+    
+    # Run YOLO on CLAHE image
+    print("\n--- Running YOLO on [DCP Image] ---")
+    detect_and_save(model,dcp_path , "detect_dcp")
     
     
         
