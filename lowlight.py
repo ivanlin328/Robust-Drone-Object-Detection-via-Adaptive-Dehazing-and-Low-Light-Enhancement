@@ -158,7 +158,7 @@ if __name__ == "__main__":
 
     # --- Load YOLO Model ---
     print("Loading YOLOv8l model...")
-    model = YOLO("yolov8l.pt")
+    model = YOLO("yolov8n.pt")
     model.to(device)
     
     # Process Original Image
