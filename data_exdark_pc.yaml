@@ -1,0 +1,10 @@
+path: /Users/ivanlin328/Desktop/UCSD/Fall 2025/ECE 253/ECE 253 Final Project/exdark_yolo_pc
+
+train: images/train
+val: images/val
+
+nc: 3
+names:
+  - person   # class 0
+  - ignore   # class 1
+  - car      # class 2
