@@ -62,7 +62,7 @@ for ann_path in ann_files:
 
             cls_id = visdrone_to_yolo_cls(cat_id)
             if cls_id is None:
-                continue  # 不要的類別
+                continue  
 
             # 轉成 YOLO normalized format
             cx = (x + w / 2.0) / img_w

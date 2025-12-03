@@ -176,7 +176,7 @@ if __name__ == "__main__":
     # Process CLAHE Image
     print("\n--- Applying CLAHE ---")
     clahe_img = apply_clahe(img, clipLimit, tileSize)
-    clahe_path = "done6_clahe_output.png"
+    clahe_path = "done1_clahe_output.png"
     cv2.imwrite(clahe_path, clahe_img)
     print(f"Saved CLAHE image to: {clahe_path}")
     
@@ -184,7 +184,7 @@ if __name__ == "__main__":
     print("\n--Applying Zero DCE++")
     zero_dcepp_net = load_zero_dcepp(device)
     zd_img = apply_zero_dcepp(zero_dcepp_net, img, device)
-    zd_path = "drone6_zerodcepp_output.png"
+    zd_path = "drone1_zerodcepp_output.png"
     cv2.imwrite(zd_path, zd_img)
     print(f"Saved Zero-DCE++ image to: {zd_path}")
     
